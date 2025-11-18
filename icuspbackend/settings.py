@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'accounts.apps.AccountsConfig',
     'rest_framework',
+    "corsheaders",
 ]
 
 AUTH_USER_MODEL = "accounts.CustomUser"
@@ -49,6 +49,10 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
