@@ -1,15 +1,18 @@
-from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-@api_view(["POST"]) 
-def signup(request):                                   #função de cadastro de usuário
-    username = request.data.get("username")
-    password = request.data.get("password")
+from .serializers import SignupSerializer
 
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "Usuário já existe"}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["POST"])
+def signup(request):
+    serializer = SignupSerializer(data=request.data)
 
-    user = User.objects.create_user(username=username, password=password)
-    return Response({"message": "Usuário criado"}, status=status.HTTP_201_CREATED)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "Usuário criado com sucesso"},
+            status=status.HTTP_201_CREATED
+        )
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
