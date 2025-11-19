@@ -7,8 +7,6 @@ from .serializers import (
     AlunoSignupSerializer,
     ProfessorSignupSerializer
 )
-from .models import CustomUser
-
 
 # ----------------------------------------
 #               SIGNUP ALUNO
