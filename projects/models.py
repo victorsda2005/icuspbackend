@@ -27,3 +27,25 @@ class IniciacaoCientifica(models.Model):
 
     def __str__(self):
         return self.titulo
+    
+class InteresseIC(models.Model):
+    aluno = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        limit_choices_to={"role": "aluno"},
+        related_name="interesses"
+    )
+
+    iniciacao = models.ForeignKey(
+        IniciacaoCientifica,
+        on_delete=models.CASCADE,
+        related_name="interessados"
+    )
+
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("aluno", "iniciacao")
+
+    def __str__(self):
+        return f"{self.aluno.username} -> {self.iniciacao.titulo}"

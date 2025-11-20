@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import IniciacaoCientifica
+from .models import InteresseIC
+from accounts.models import CustomUser
 
 class IniciacaoCientificaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +21,19 @@ class IniciacaoCientificaSerializer(serializers.ModelSerializer):
             data["tipo_bolsa"] = None
 
         return data
+    
+class InteresseICSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InteresseIC
+        fields = ["id", "aluno", "iniciacao", "criado_em"]
+        read_only_fields = ["aluno", "criado_em"]
+
+class AlunoInteressadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["id", "username", "email", "matricula", "curso"]
+
+class IniciacaoListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IniciacaoCientifica
+        fields = ["id", "titulo", "area_pesquisa", "professor", "criado_em"]
