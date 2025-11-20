@@ -1,11 +1,7 @@
 from rest_framework import serializers
-<<<<<<< HEAD
 from .models import IniciacaoCientifica, Message
-=======
-from .models import IniciacaoCientifica
 from .models import InteresseIC
 from accounts.models import CustomUser
->>>>>>> 57be28e8da60aea77a54af8af214cabc588cfaea
 
 class IniciacaoCientificaSerializer(serializers.ModelSerializer):
     class Meta:
