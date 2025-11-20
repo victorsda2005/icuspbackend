@@ -68,10 +68,22 @@ class SignupProfessor(APIView):
 class LoginView(APIView):
     def post(self, request):
 
-        username = request.data.get("username")
+        login = request.data.get("username")
         password = request.data.get("password")
 
-        user = authenticate(username=username, password=password)
+        # 1. Tenta autenticar usando username normalmente
+        user = authenticate(username=login, password=password)
+
+        # 2. Se falhar, tenta autenticar usando o email
+        if user is None:
+            try:
+                from django.contrib.auth import get_user_model
+                User = get_user_model()
+                user_obj = User.objects.filter(email=login).first()
+                if user_obj:
+                    user = authenticate(username=user_obj.username, password=password)
+            except:
+                pass
 
         if user is None:
             return Response({"error": "Credenciais inválidas"}, status=401)
