@@ -33,7 +33,7 @@ class Message(models.Model):
     autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     texto = models.TextField()
     criado_em = models.DateTimeField(auto_now_add=True)
-    atualizado_em = models.DateTimeField(null=True, blank=True) # n sei se vai existir
+    
  
     class Meta:
         ordering = ["criado_em"]

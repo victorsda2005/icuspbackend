@@ -35,7 +35,7 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = "__all__"
-        read_only_fields = ("autor", "criado_em", "atualizado_em")
+        read_only_fields = ("autor", "criado_em")
 
     def validate(self, data):
         texto = data.get('texto')
