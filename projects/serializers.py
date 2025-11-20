@@ -3,7 +3,14 @@ from .models import IniciacaoCientifica, Message
 from .models import InteresseIC
 from accounts.models import CustomUser
 
+class ProfessorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["id", "username", "email"]
+
 class IniciacaoCientificaSerializer(serializers.ModelSerializer):
+    professor = ProfessorSerializer(read_only=True)
+
     class Meta:
         model = IniciacaoCientifica
         fields = "__all__"
@@ -54,6 +61,8 @@ class AlunoInteressadoSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "matricula", "curso"]
 
 class IniciacaoListSerializer(serializers.ModelSerializer):
+    professor = ProfessorSerializer(read_only=True)
+    
     class Meta:
         model = IniciacaoCientifica
         fields = ["id", "titulo", "area_pesquisa", "professor", "criado_em"]
