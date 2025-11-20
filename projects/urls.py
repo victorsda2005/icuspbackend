@@ -8,7 +8,10 @@ from .views import (
     DemonstrarInteresseView,
     ListaInteressadosView,
     ListarInteressesAlunoView,
-    RemoverInteresseView
+    RemoverInteresseView,
+    BuscarIniciacoesView,
+    EditarIniciacaoView,
+    ExcluirIniciacaoView
 )
 
 urlpatterns = [
@@ -32,4 +35,7 @@ urlpatterns = [
     path("iniciacao/<int:id>/interessados/", ListaInteressadosView.as_view()),
     path("iniciacao/interesse/listar/", ListarInteressesAlunoView.as_view()),
     path("iniciacao/interesse/remover/<int:pk>/", RemoverInteresseView.as_view()),
+    path("iniciacao/buscar/", BuscarIniciacoesView.as_view()),
+    path("iniciacao/<int:pk>/editar/", EditarIniciacaoView.as_view()),
+    path("iniciacao/<int:pk>/excluir/", ExcluirIniciacaoView.as_view()),
 ]

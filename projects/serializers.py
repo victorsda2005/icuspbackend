@@ -22,8 +22,6 @@ class IniciacaoCientificaSerializer(serializers.ModelSerializer):
 
         return data
 
-
-
 # Serializer para mensagens do post / chat simples
 class MessageSerializer(serializers.ModelSerializer):
     autor = serializers.StringRelatedField(read_only=True)
@@ -59,3 +57,9 @@ class IniciacaoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = IniciacaoCientifica
         fields = ["id", "titulo", "area_pesquisa", "professor", "criado_em"]
+
+class IniciacaoUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IniciacaoCientifica
+        fields = "__all__"
+        read_only_fields = ["professor", "criado_em"]
