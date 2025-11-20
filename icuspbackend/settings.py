@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'projects.apps.ProjectsConfig',
+    'chat.apps.ChatConfig',
     
     'rest_framework',
     "corsheaders",
