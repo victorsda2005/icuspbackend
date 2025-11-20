@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import IniciacaoCientifica
+from .models import IniciacaoCientifica, Message
 
 class IniciacaoCientificaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,26 @@ class IniciacaoCientificaSerializer(serializers.ModelSerializer):
             data["tipo_bolsa"] = None
 
         return data
+
+
+
+# Serializer para mensagens do post / chat simples
+class MessageSerializer(serializers.ModelSerializer):
+    autor = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = Message
+        fields = "__all__"
+        read_only_fields = ("autor", "criado_em", "atualizado_em")
+
+    def validate(self, data):
+        texto = data.get('texto')
+        if not texto or not texto.strip():
+            raise serializers.ValidationError({"texto": "O texto da mensagem não pode ficar vazio."})
+        return data
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if request and hasattr(request, "user") and request.user.is_authenticated:
+            validated_data["autor"] = request.user
+        return super().create(validated_data)

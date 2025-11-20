@@ -27,3 +27,16 @@ class IniciacaoCientifica(models.Model):
 
     def __str__(self):
         return self.titulo
+    
+class Message(models.Model):
+    post = models.ForeignKey(IniciacaoCientifica, on_delete=models.CASCADE, related_name="messages")
+    autor = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    texto = models.TextField()
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(null=True, blank=True) # n sei se vai existir
+ 
+    class Meta:
+        ordering = ["criado_em"]
+
+    def __str__(self):
+        return f"{self.autor} @ {self.criado_em}"
