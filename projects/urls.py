@@ -1,5 +1,15 @@
 from django.urls import path
 from .views import CriarIniciacaoCientificaView, ListaIniciacoesView, MinhasIniciacoesView, DetalheIniciacaoView, MessageViewSet
+from .views import (
+    CriarIniciacaoCientificaView, 
+    ListaIniciacoesView, 
+    MinhasIniciacoesView, 
+    DetalheIniciacaoView, 
+    DemonstrarInteresseView,
+    ListaInteressadosView,
+    ListarInteressesAlunoView,
+    RemoverInteresseView
+)
 
 urlpatterns = [
     path('iniciacao/criar/', CriarIniciacaoCientificaView.as_view()),
@@ -18,4 +28,8 @@ urlpatterns = [
         'patch': 'partial_update',
         'delete': 'destroy'
     }), name='message-detail'),
+    path("iniciacao/interesse/", DemonstrarInteresseView.as_view(), name="interesse-ic"),
+    path("iniciacao/<int:id>/interessados/", ListaInteressadosView.as_view()),
+    path("iniciacao/interesse/listar/", ListarInteressesAlunoView.as_view()),
+    path("iniciacao/interesse/remover/<int:pk>/", RemoverInteresseView.as_view()),
 ]
