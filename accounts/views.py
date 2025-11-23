@@ -1,7 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.shortcuts import get_object_or_404
+from accounts.models import CustomUser
 from django.contrib.auth import authenticate
+from projects.models import IniciacaoCientifica
+from projects.serializers import IniciacaoListSerializer
 
 from .serializers import (
     AlunoSignupSerializer,
@@ -100,3 +105,18 @@ class LoginView(APIView):
             "access_token": str(refresh.access_token),
             "refresh_token": str(refresh)
         }, status=200)
+
+class GetProfessorById(APIView):
+    def get(self, request, professor_id):
+        professor = get_object_or_404(CustomUser, id=professor_id, role="professor")
+        ics = IniciacaoCientifica.objects.filter(professor=professor)
+        ic_serializer = IniciacaoListSerializer(ics, many=True)
+
+        return Response({
+            "id": professor.id,
+            "username": professor.username,
+            "email": professor.email,
+            "departamento": professor.departamento,
+            "areas_pesquisa": professor.areas_pesquisa,
+            "iniciacoes": ic_serializer.data
+        }, status=status.HTTP_200_OK)
