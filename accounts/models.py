@@ -1,8 +1,23 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.core.validators import RegexValidator
 
 class CustomUser(AbstractUser):
+
+    username_validator = RegexValidator(
+        regex=r'^[A-Za-zÀ-ÖØ-öø-ÿ ]+$',
+        message="O nome de usuário deve conter apenas letras, acentos e espaços."
+    )
+
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        validators=[username_validator],
+        error_messages={
+            "unique": "Já existe um usuário com este nome.",
+        },
+    )
+
     ROLE_CHOICES = [
         ('aluno', 'Aluno'),
         ('professor', 'Professor'),
