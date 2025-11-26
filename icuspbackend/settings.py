@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'projects.apps.ProjectsConfig',
     'chat.apps.ChatConfig',
@@ -67,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware', # adicione esta linha
-    
+
 ]
 
 ROOT_URLCONF = 'icuspbackend.urls'
