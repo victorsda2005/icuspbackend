@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-nn*t4qe(8f0lp@97syh#3cx^i#0#(md#!b+jhe@bnl#6qp^$wy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["127.0.0.1", ".onrender.com"]
+CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com/"]
 
 # Application definition
 
@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    #'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'projects.apps.ProjectsConfig',
     'chat.apps.ChatConfig',
@@ -66,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware', # adicione esta linha
+
 ]
 
 ROOT_URLCONF = 'icuspbackend.urls'
