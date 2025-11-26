@@ -8,6 +8,8 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from .models import InteresseIC, IniciacaoCientifica
 from .serializers import InteresseICSerializer, AlunoInteressadoSerializer, IniciacaoListSerializer, IniciacaoUpdateSerializer
 from accounts.models import CustomUser
+from rest_framework.response import Response
+from rest_framework import status
 
 class CriarIniciacaoCientificaView(generics.CreateAPIView):
     queryset = IniciacaoCientifica.objects.all()
@@ -126,7 +128,7 @@ class ListaInteressadosView(generics.ListAPIView):
         return CustomUser.objects.filter(interesses__iniciacao=ic)
     
 class ListarInteressesAlunoView(generics.ListAPIView):
-    serializer_class = IniciacaoListSerializer
+    serializer_class = InteresseICSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -135,7 +137,7 @@ class ListarInteressesAlunoView(generics.ListAPIView):
         if user.role != "aluno":
             raise PermissionDenied("Somente alunos podem listar seus interesses.")
 
-        return IniciacaoCientifica.objects.filter(interessados__aluno=user)
+        return InteresseIC.objects.filter(aluno=user).select_related("iniciacao")
     
 class RemoverInteresseView(generics.DestroyAPIView):
     queryset = InteresseIC.objects.all()
@@ -148,7 +150,7 @@ class RemoverInteresseView(generics.DestroyAPIView):
             raise PermissionDenied("Você só pode remover seus próprios interesses.")
 
         interesse.delete()
-        return Response({"detail": "Interesse removido com sucesso."}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "Interesse removido com sucesso."}, status=status.HTTP_200_OK)
     
 class BuscarIniciacoesView(generics.ListAPIView):
     serializer_class = IniciacaoListSerializer
