@@ -10,6 +10,7 @@ from .serializers import InteresseICSerializer, AlunoInteressadoSerializer, Inic
 from accounts.models import CustomUser
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 class CriarIniciacaoCientificaView(generics.CreateAPIView):
     queryset = IniciacaoCientifica.objects.all()
@@ -57,17 +58,20 @@ class DetalheIniciacaoView(RetrieveAPIView):
 #     def perform_create(self, serializer):
 #         serializer.save(autor=self.request.user)
 
-class ICListarMensagensView(generics.ListAPIView):
-    queryset = Message.objects.select_related("autor").all()
-    serializer_class = MessageSerializer
+class ICListarMensagensView(APIView):
     permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        post_id = self.request.query_params.get("post") or self.kwargs.get("post_pk")
-        if post_id:
-            qs = qs.filter(post_id=post_id)
-        return qs
+    def post(self, request, *args, **kwargs):
+        post_id = request.data.get("post")
+
+        if not post_id:
+            return Response({"error": "Parâmetro 'post' é obrigatório."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        mensagens = Message.objects.select_related("autor").filter(post_id=post_id)
+        serializer = MessageSerializer(mensagens, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ICEnviarMensagemView(generics.CreateAPIView):
     serializer_class = MessageSerializer
