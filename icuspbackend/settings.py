@@ -47,10 +47,22 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
+from datetime import timedelta
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),  # Token de acesso válido por 24 horas
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),   # Token de refresh válido por 7 dias
+    'ROTATE_REFRESH_TOKENS': True,                 # Rotaciona o refresh token após uso
+    'BLACKLIST_AFTER_ROTATION': True,              # Invalida o refresh token antigo
+    'UPDATE_LAST_LOGIN': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
 }
 
 CORS_ALLOWED_ORIGINS = [
