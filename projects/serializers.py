@@ -17,15 +17,20 @@ class IniciacaoCientificaSerializer(serializers.ModelSerializer):
         read_only_fields = ("professor", "criado_em")
 
     def validate(self, data):
-        # Se bolsa_disponivel é True → tipo_bolsa é obrigatório
+        # Se bolsa_disponivel é True, tipo_bolsa é obrigatório
         if data.get("bolsa_disponivel") and not data.get("tipo_bolsa"):
             raise serializers.ValidationError({
                 "tipo_bolsa": "O campo 'tipo_bolsa' é obrigatório quando 'bolsa_disponivel' é verdadeiro."
             })
+        if data.get("bolsa_disponivel") and not data.get("valor_bolsa"):
+            raise serializers.ValidationError({
+                "valor_bolsa": "O campo 'valor_bolsa' é obrigatório quando 'bolsa_disponivel' é verdadeiro."
+            })
 
-        # Se bolsa_disponivel é False → tipo_bolsa deve ser nulo
+        # Se bolsa_disponivel é False, tipo_bolsa deve ser nulo
         if not data.get("bolsa_disponivel"):
             data["tipo_bolsa"] = None
+            data["valor_bolsa"] = None
 
         return data
 

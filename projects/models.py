@@ -17,6 +17,7 @@ class IniciacaoCientifica(models.Model):
 
     bolsa_disponivel = models.BooleanField(default=False)
     tipo_bolsa = models.CharField(max_length=100, blank=True, null=True)  # <-- novo campo
+    valor_bolsa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  # <-- novo campo
 
     tags = models.CharField(max_length=300)
 
