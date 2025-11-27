@@ -48,7 +48,7 @@ class ProfessorSignupSerializer(serializers.ModelSerializer):
         fields = [
             "username", "email",
             "password", "password2",
-            "departamento", "areas_pesquisa",
+            "departamento", "areas_pesquisa","biografia"
         ]
 
     def validate(self, attrs):
@@ -65,5 +65,6 @@ class ProfessorSignupSerializer(serializers.ModelSerializer):
             role="professor",
             departamento=validated_data.get("departamento"),
             areas_pesquisa=validated_data.get("areas_pesquisa"),
+            biografia=validated_data.get("biografia")
         )
         return user

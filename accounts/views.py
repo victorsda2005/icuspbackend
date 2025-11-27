@@ -7,6 +7,7 @@ from accounts.models import CustomUser
 from django.contrib.auth import authenticate
 from projects.models import IniciacaoCientifica
 from projects.serializers import IniciacaoListSerializer
+from rest_framework import permissions
 
 from .serializers import (
     AlunoSignupSerializer,
@@ -59,6 +60,7 @@ class SignupProfessor(APIView):
                     "role": user.role,
                     "departamento": user.departamento,
                     "areas_pesquisa": user.areas_pesquisa,
+                    "biografia": user.biografia
                 },
                 "access_token": str(refresh.access_token),
                 "refresh_token": str(refresh)
@@ -107,6 +109,9 @@ class LoginView(APIView):
         }, status=200)
 
 class GetProfessorById(APIView):
+    # permite GET sem autenticação, mas requer autenticação para métodos de escrita
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request, professor_id):
         professor = get_object_or_404(CustomUser, id=professor_id, role="professor")
         ics = IniciacaoCientifica.objects.filter(professor=professor)
@@ -118,5 +123,53 @@ class GetProfessorById(APIView):
             "email": professor.email,
             "departamento": professor.departamento,
             "areas_pesquisa": professor.areas_pesquisa,
-            "iniciacoes": ic_serializer.data
+            "iniciacoes": ic_serializer.data,
+            "biografia": professor.biografia
         }, status=status.HTTP_200_OK)
+
+    def _update_professor_from_data(self, professor, data):
+        # Atualiza somente os campos enviados (comportamento PATCH)
+        if 'departamento' in data:
+            professor.departamento = data.get('departamento')
+        if 'areas_pesquisa' in data:
+            professor.areas_pesquisa = data.get('areas_pesquisa')
+        if 'biografia' in data:
+            professor.biografia = data.get('biografia')
+        # se quiser validar outros campos, faça aqui
+        professor.save()
+        return professor
+
+    def patch(self, request, professor_id):
+        # requer autenticação por conta de permission_classes
+        professor = get_object_or_404(CustomUser, id=professor_id, role="professor")
+
+        # somente o dono do perfil (ou superuser) pode editar
+        if not request.user.is_authenticated:
+            return Response({"detail": "Autenticação necessária."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if request.user != professor and not request.user.is_superuser:
+            return Response({"detail": "Você só pode editar seu próprio perfil."}, status=status.HTTP_403_FORBIDDEN)
+
+        data = request.data
+        try:
+            professor = self._update_professor_from_data(professor, data)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # responder com o objeto atualizado (mesma estrutura do GET)
+        ics = IniciacaoCientifica.objects.filter(professor=professor)
+        ic_serializer = IniciacaoListSerializer(ics, many=True)
+
+        return Response({
+            "id": professor.id,
+            "username": professor.username,
+            "email": professor.email,
+            "departamento": professor.departamento,
+            "areas_pesquisa": professor.areas_pesquisa,
+            "iniciacoes": ic_serializer.data,
+            "biografia": professor.biografia
+        }, status=status.HTTP_200_OK)
+
+    # Opcional: tratar PUT como alias de PATCH (se preferir PUT full replace, implemente validação)
+    def put(self, request, professor_id):
+        return self.patch(request, professor_id)
