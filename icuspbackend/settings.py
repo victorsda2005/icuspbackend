@@ -66,7 +66,7 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+    "http://localhost:8080","https://icusp-frontend.onrender.com"
 ]
 
 MIDDLEWARE = [
